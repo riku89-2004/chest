@@ -1,5 +1,4 @@
 <!--コメントはこうやって書く,必須はA,それ以外はB-->
-
 <!doctype html>
 <html lang="ja">
     <head>
@@ -20,7 +19,7 @@
         --SNS end-->
 
 
-        <title>constructing now!</title>
+        <title>五種目測定確認ツール</title>
         <meta name="description" content="ここにコメント"/> <!--B,検索結果に表示される文字-->
 
         <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -29,43 +28,43 @@
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@mdi/font@latest/css/materialdesignicons.min.css">
         <meta name="google-site-verification" content="7oXfj0ldQijI1azU9A4STls9QkD7QnqWs5DxNkOS5m0"/>
         <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-        <link rel="stylesheet" href="https://github.com/riku89-2004/chest/blob/0055348046d1f14a3bf7e65def03d18b8c1c1f19/support.css/">
+        <link rel="stylesheet" href="support.css">
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     </head>
     <body>
-        <h1>五種目測定確認ツール</h1>
-        <canvas id="radarChart" width="400" height="400"></canvas>
+        <h1>Excelファイル処理</h1>
+        <form id="excelForm">
+            <label for="url">ExcelファイルのURL:</label>
+            <input type="text" id="url" name="url" required>
+            <button type="submit">送信</button>
+        </form>
+        <div id="result"></div>
+
         <script>
-            const ctx = document.getElementById('radarChart').getContext('2d');
-            const data = {
-                labels: ["種目1", "種目2", "種目3", "種目4", "種目5"],
-                datasets: [
-                    {
-                        label: "結果",
-                        data: [80, 90, 70, 85, 95],
-                        borderColor: "rgba(75, 192, 192, 1)",
-                        backgroundColor: "rgba(75, 192, 192, 0.2)",
-                    },
-                    {
-                        label: "目標",
-                        data: [100, 100, 100, 100, 100],
-                        borderColor: "rgba(255, 99, 132, 1)",
-                        backgroundColor: "rgba(255, 99, 132, 0.2)",
-                    }
-                ]
-            };
-            const config = {
-                type: 'radar',
-                data: data,
-                options: {
-                    scales: {
-                        r: {
-                            beginAtZero: true,
-                            max: 120
+            $(document).ready(function() {
+                $('#excelForm').submit(function(event) {
+                    event.preventDefault();
+                    const url = $('#url').val();
+
+                    // サーバーにデータを送信
+                    $.ajax({
+                        url: "/process_excel",
+                        type: "POST",
+                        contentType: "application/json",
+                        data: JSON.stringify({ url: url }),
+                        success: function(response) {
+                            $('#result').html(
+                                `<p>元の値: ${response.original}</p>
+                                <p>計算結果: ${response.calculated}</p>`
+                            );
+                        },
+                        error: function(xhr) {
+                            const error = xhr.responseJSON?.error || "不明なエラーが発生しました。";
+                            $('#result').html(`<p style="color: red;">エラー: ${error}</p>`);
                         }
-                    }
-                }
-            };
-            new Chart(ctx, config);
+                    });
+                });
+            });
         </script>
     </body>
 </html>
