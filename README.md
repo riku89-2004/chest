@@ -1,1 +1,3 @@
-# chest
+Flask
+openpyxl
+requests
