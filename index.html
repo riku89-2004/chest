@@ -32,39 +32,15 @@
         <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     </head>
     <body>
-        <h1>Excelファイル処理</h1>
-        <form id="excelForm">
-            <label for="url">ExcelファイルのURL:</label>
-            <input type="text" id="url" name="url" required>
+        <h1>リストから選択して送信</h1>
+        <form action="/submit" method="post">
+            <label for="options">名前を選んでください:</label>
+            <select id="options" name="selectedOption">
+                <option value="名前1">名前1</option>
+                <option value="名前2">名前2</option>
+                <option value="名前3">名前3</option>
+            </select>
             <button type="submit">送信</button>
         </form>
-        <div id="result"></div>
-
-        <script>
-            $(document).ready(function() {
-                $('#excelForm').submit(function(event) {
-                    event.preventDefault();
-                    const url = $('#url').val();
-
-                    // サーバーにデータを送信
-                    $.ajax({
-                        url: "/process_excel",
-                        type: "POST",
-                        contentType: "application/json",
-                        data: JSON.stringify({ url: url }),
-                        success: function(response) {
-                            $('#result').html(
-                                `<p>元の値: ${response.original}</p>
-                                <p>計算結果: ${response.calculated}</p>`
-                            );
-                        },
-                        error: function(xhr) {
-                            const error = xhr.responseJSON?.error || "不明なエラーが発生しました。";
-                            $('#result').html(`<p style="color: red;">エラー: ${error}</p>`);
-                        }
-                    });
-                });
-            });
-        </script>
     </body>
 </html>
