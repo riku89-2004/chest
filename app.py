@@ -1,49 +1,57 @@
-from flask import Flask, render_template, request, jsonify
-from openpyxl import load_workbook
-from io import BytesIO
-import requests
+import os
+import json
+from flask import Flask, render_template, request
+import matplotlib.pyplot as plt
 
 app = Flask(__name__)
 
-@app.route('/')
+# JSONファイル（対応表）を読み込む
+MAPPINGS_FILE = os.path.join(os.path.dirname(__file__), 'lib', 'mappings.json')
+with open(MAPPINGS_FILE, 'r', encoding='utf-8') as f:
+    mappings = json.load(f)
+
+@app.route("/")
 def index():
-    return render_template('index.html')
+    return render_template("index.html")
 
-@app.route('/process_excel', methods=['POST'])
-def process_excel():
-    try:
-        # クライアントから送信されたURLを取得
-        data = request.json
-        excel_url = data.get('url')
-        if not excel_url:
-            return jsonify({"error": "URLが指定されていません。"}), 400
+@app.route("/submit", methods=["POST"])
+def submit():
+    selected_option = request.form.get("selectedOption")
+    
+    if selected_option not in mappings:
+        return render_template("result.html", message="無効な選択です。")
 
-        # ネット上のエクセルファイルを取得
-        response = requests.get(excel_url)
-        if response.status_code != 200:
-            return jsonify({"error": "エクセルファイルの取得に失敗しました。"}), 500
+    # 仮データ：Excelから取得するデータの代わり
+    g_list = [5, 15, 10, 20, 25]  # 実際にはExcelからデータを取得してください
 
-        # エクセルデータの読み込み
-        excel_data = BytesIO(response.content)
-        workbook = load_workbook(excel_data)
-        sheet = workbook.active
+    # グラフを作成
+    img_path = os.path.join("static", "graph.png")
+    create_radar_chart(g_list, img_path)
 
-        # 指定したセルの値を取得 (例: B2)
-        cell_value = sheet["B2"].value
+    return render_template("result.html", graph_url=img_path, g_list=g_list)
 
-        # 数式に基づく値の計算
-        if isinstance(cell_value, (int, float)):
-            calculated_value = cell_value * 1.2  # 値を1.2倍
-            result = {
-                "original": cell_value,
-                "calculated": calculated_value
-            }
-        else:
-            return jsonify({"error": "セルの値が数値ではありません。"}), 400
+def create_radar_chart(data, output_path):
+    labels = ["A", "B", "C", "D", "E"]
+    num_vars = len(labels)
 
-        return jsonify(result)
-    except Exception as e:
-        return jsonify({"error": str(e)}), 500
+    # レーダーチャートの角度
+    angles = [n / float(num_vars) * 2 * 3.14159 for n in range(num_vars)]
+    angles += angles[:1]
 
-if __name__ == '__main__':
+    # データの準備
+    data += data[:1]
+
+    # プロット
+    fig, ax = plt.subplots(figsize=(6, 6), subplot_kw=dict(polar=True))
+    ax.fill(angles, data, color='blue', alpha=0.25)
+    ax.plot(angles, data, color='blue', linewidth=2)
+    ax.set_yticks([])  # Y軸の値を非表示
+    ax.set_xticks(angles[:-1])
+    ax.set_xticklabels(labels)
+
+    # 保存
+    plt.savefig(output_path)
+    plt.close()
+
+if __name__ == "__main__":
     app.run(debug=True)
