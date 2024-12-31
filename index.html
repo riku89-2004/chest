@@ -42,5 +42,12 @@
             </select>
             <button type="submit">送信</button>
         </form>
+        {% if g_list %}
+            <h2>結果</h2>
+            <p>取得した値: {{ g_list }}</p>
+            <img src="{{ graph_url }}" alt="五角形のグラフ">
+        {% elif message %}
+            <h2>{{ message }}</h2>
+        {% endif %}
     </body>
 </html>
