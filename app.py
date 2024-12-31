@@ -10,25 +10,24 @@ MAPPINGS_FILE = os.path.join(os.path.dirname(__file__), 'lib', 'mappings.json')
 with open(MAPPINGS_FILE, 'r', encoding='utf-8') as f:
     mappings = json.load(f)
 
-@app.route("/")
+@app.route("/", methods=["GET", "POST"])
 def index():
+    if request.method == "POST":
+        selected_option = request.form.get("selectedOption")
+        
+        if selected_option not in mappings:
+            return render_template("index.html", message="無効な選択です。")
+
+        # 仮データ：Excelから取得するデータの代わり
+        g_list = [5, 15, 10, 20, 25]  # 実際にはExcelからデータを取得してください
+
+        # グラフを作成
+        img_path = os.path.join("static", "graph.png")
+        create_radar_chart(g_list, img_path)
+
+        return render_template("index.html", graph_url=img_path, g_list=g_list)
+
     return render_template("index.html")
-
-@app.route("/submit", methods=["POST"])
-def submit():
-    selected_option = request.form.get("selectedOption")
-    
-    if selected_option not in mappings:
-        return render_template("result.html", message="無効な選択です。")
-
-    # 仮データ：Excelから取得するデータの代わり
-    g_list = [5, 15, 10, 20, 25]  # 実際にはExcelからデータを取得してください
-
-    # グラフを作成
-    img_path = os.path.join("static", "graph.png")
-    create_radar_chart(g_list, img_path)
-
-    return render_template("result.html", graph_url=img_path, g_list=g_list)
 
 def create_radar_chart(data, output_path):
     labels = ["A", "B", "C", "D", "E"]
