@@ -66,14 +66,25 @@
         <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     </head>
     <body>
+        <!-- 外部JavaScriptファイルを読み込み -->
+        <script src="script.js"></script>
+
         <form action="/" method="post">
             <h1>選択してください</h1>
-            <label for="options">名前を選んでください:</label>
-            <select id="options" name="selectedName">
-                <option value="名前1">名前1</option>
-                <option value="名前2">名前2</option>
-                <option value="名前3">名前3</option>
+            <label for="main-category">名前を選んでください:</label>
+            <select id="main-category">
+                <option value="">--選択してください--</option>
+                <option value="fruits">1年</option>
+                <option value="vegetables">2年</option>
+                <option value="animals">3年</option>
             </select>
+
+            <!-- 小分類 -->
+            <label for="sub-category">小分類:</label>
+            <select id="sub-category"　name="selectedName">
+                <option value="">--大分類を選択してください--</option>
+            </select>
+
             <h3>タイプを選んでください</h3>
             <input type="radio" id="type1" name="selectedType" value="Average">
             <label for="type1">Average</label><br>
