@@ -32,22 +32,63 @@
         <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     </head>
     <body>
-        <h1>リストから選択して送信</h1>
-        <form action="/submit" method="post">
+        <!--コメントはこうやって書く,必須はA,それ以外はB-->
+<!doctype html>
+<html lang="ja">
+    <head>
+        <!--基本設定-->
+        <meta charset="utf-8"> <!--A,文字の指定-->
+        <meta http-equiv="X-UA-Compatible" content="IE=edge"> <!--A,古いブラウザで互換モードを使わず最新機能を有効にする。-->
+        <meta name="viewport" content="width=device-width,initial-scale=1"> <!--A,スマホやタブレットで見やすいように画面サイズを調整。-->
+        <!--基本設定 end-->
+
+        <!--SNS--
+        <meta name="twitter:card" content=""/>
+        <meta name="twitter:site" content="Twitter"/>
+        <meta property="og:url" content=""/>
+        <meta property="og:title" content="LINEで表示されるタイトル"/>
+        <meta property="og:description" content="LINEでの説明"/>
+        <meta property="og:image" content="佐胸のリンク"/>
+        <link rel="icon" href="アイコン画像のリンク">
+        --SNS end-->
+
+
+        <title>五種目測定確認ツール</title>
+        <meta name="description" content="ここにコメント"/> <!--B,検索結果に表示される文字-->
+
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@mdi/font@latest/css/materialdesignicons.min.css">
+        <meta name="google-site-verification" content="7oXfj0ldQijI1azU9A4STls9QkD7QnqWs5DxNkOS5m0"/>
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+        <link rel="stylesheet" href="style.css">
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    </head>
+    <body>
+        <form action="/" method="post">
+            <h1>選択してください</h1>
             <label for="options">名前を選んでください:</label>
-            <select id="options" name="selectedOption">
+            <select id="options" name="selectedName">
                 <option value="名前1">名前1</option>
                 <option value="名前2">名前2</option>
                 <option value="名前3">名前3</option>
             </select>
+            <h3>タイプを選んでください</h3>
+            <input type="radio" id="type1" name="selectedType" value="Average">
+            <label for="type1">Average</label><br>
+            <input type="radio" id="type2" name="selectedType" value="Criteria">
+            <label for="type2">Criteria</label><br>
+            <input type="radio" id="type3" name="selectedType" value="Ranking">
+            <label for="type3">Ranking</label><br><br>
             <button type="submit">送信</button>
         </form>
         {% if g_list %}
             <h2>結果</h2>
             <p>取得した値: {{ g_list }}</p>
-            <img src="{{ graph_url }}" alt="五角形のグラフ">
-        {% elif message %}
-            <h2>{{ message }}</h2>
+            <img src="{{ graph_url }}" alt="五角形のグラフ" style="width: 400px; height: 400px;">
+        {% else %}
+            <p>待機中です。</p>
         {% endif %}
     </body>
 </html>
