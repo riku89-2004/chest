@@ -1,19 +1,19 @@
 ﻿//小分類のデータ
 const subCategoryData = {
-    fruits: [
-      { value: "apple", text: "りんご" },
-      { value: "banana", text: "バナナ" },
-      { value: "orange", text: "オレンジ" }
+    OTEith: [
+      { value: "abekenta", text: "阿部憲太" },
+      { value: "iimure", text: "飯牟礼" },
+      { value: "iwai", text: "岩井" }
     ],
-    vegetables: [
-      { value: "carrot", text: "にんじん" },
-      { value: "potato", text: "じゃがいも" },
-      { value: "cabbage", text: "キャベツ" }
+    OTSeth: [
+      { value: "inokuma", text: "猪熊" },
+      { value: "iwamoto", text: "岩本" },
+      { value: "kasahara", text: "笠原" }
     ],
-    animals: [
-      { value: "cat", text: "猫" },
-      { value: "dog", text: "犬" },
-      { value: "bird", text: "鳥" }
+    OTSith: [
+      { value: "asami", text: "浅見" },
+      { value: "abeyuuki", text: "阿部優貴" },
+      { value: "itimura", text: "市村" }
     ]
   };
 
