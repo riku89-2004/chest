@@ -18,9 +18,9 @@ count = 0
 Getlist = []
 Compare_list = []
 Skills = ["20sec", "60sec", "2000m", "20min", "60min"]
-Getinfo = "key2"
+selectedName = None
 #サーバーから送られた選択肢
-Selected = "Average"
+Selected = None
 #サーバーから送られた選択肢
 output_path = "radar_chart.png"
 #返答
@@ -30,12 +30,12 @@ with open(MAPPINGS_FILE, 'r', encoding='utf-8') as f:
     mappings = json.load(f)
 #mapping.jsonを取得
 
-if Getinfo in mappings and len(mappings[Getinfo]) >= 5:
+if selectedName in mappings and len(mappings[selectedName]) >= 5:
     while order < 5:
-        Getlist.append(mappings[Getinfo][order])
+        Getlist.append(mappings[selectedName][order])
         order += 1
 else:
-    print(" '{Getinfo}'のデータが見つかりませんでした")
+    print(" '{}'のデータが見つかりませんでした")
 
 if Selected in mappings and len(mappings[Selected]) >= 5:
     while count < 5:
@@ -44,28 +44,27 @@ if Selected in mappings and len(mappings[Selected]) >= 5:
 else:
     print(" '{Selected}'のデータが見つかりませんでした")
 
-@app.route("/", methods=["GET", "POST"])
-def index():
-    if request.method == "POST":
-        selected_option = request.form.get("selectedOption")
-        if selected_option not in mappings:
-            return render_template("index.html", message="無効な選択です。")
-        else:
-            img_path = os.path.join("static", "graph.png")
-            create_radar_chart(Getlist, img_path)
-            return render_template("index.html", graph_url=img_path, Getlist=Getlist)
-    return render_template("index.html")
 
 @app.route("/", methods=["GET", "POST"])
 def index():
+    message = None
     if request.method == "POST":
         selected_name = request.form.get("selectedName")
         selected_type = request.form.get("selectedType")
+        if selectedName not in mappings:
+            return render_template("index.html", message="無効な選択です。")
+        else:
+            try:
+                img_path = os.path.join("static", "graph.png")
+                create_radar_chart(Getlist, img_path)
+            except Exception as e:
+                message = f"エラー: {e}"
         return render_template(
             "index.html",
             message=f"名前: {selected_name}, タイプ: {selected_type}",
         )
     return render_template("index.html")
+
 
 
 def create_radar_chart(skills, Compare_list, Getlist, output_path):
